@@ -4,7 +4,7 @@ import { makeStyles } from 'tss-react/mui'
 import { Loader } from 'google-maps'
 import { sample, shuffle } from 'lodash'
 import { useSnackbar } from 'notistack'
-import { Manager, io, Socket } from 'socket.io-client'
+import { io, Socket } from 'socket.io-client'
 import { getCurrentPosistion } from '../util/geolocation'
 import { makeCarIcon, makeMarkerIcon, Map } from '../util/map'
 import { Route } from '../util/models'
@@ -64,8 +64,7 @@ function Mapping() {
 
   useEffect(() => {
     if (!socketRef.current?.connected) {
-      const manager = new Manager(API_URL)
-      socketRef.current = manager.socket('/')
+      socketRef.current = io(API_URL).connect()
       socketRef.current.on('connect', () => console.log('conectou'))
     }
 
@@ -74,7 +73,6 @@ function Mapping() {
       position: [number, number]
       finished: boolean
     }) => {
-      // console.log(data)
       mapRef.current?.moveCurrentMarker(data.routeId, {
         lat: data.position[0],
         lng: data.position[1],
@@ -130,7 +128,7 @@ function Mapping() {
         socketRef.current?.emit('new-direction', { routeId: selectedRoute })
       } catch (error) {
         if (error instanceof RouteExistsError) {
-          enqueueSnackbar(`${route?.title} já adicionado, expere finalizar.`, {
+          enqueueSnackbar(`${route?.title} já adicionado, espere finalizar.`, {
             variant: 'error',
           })
           return
