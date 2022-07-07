@@ -11,5 +11,5 @@ services:
 
 networks:
   default:
-    name: kafka_default
+    name: apache-kafka_default
     external: true
