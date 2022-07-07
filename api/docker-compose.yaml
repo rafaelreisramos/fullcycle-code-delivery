@@ -11,7 +11,7 @@ services:
     depends_on:
       - db
     extra_hosts:
-      - 'host.docker.internal:172.17.0.1'
+      - 'host.docker.internal:host-gateway'
 
   db:
     image: mongo:4.4.4
