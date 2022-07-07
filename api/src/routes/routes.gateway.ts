@@ -39,7 +39,6 @@ export class RoutesGateway implements OnGatewayInit {
         },
       ],
     });
-    console.log(payload);
   }
 
   async sendPosition(data: {
@@ -48,11 +47,8 @@ export class RoutesGateway implements OnGatewayInit {
     position: [number, number];
     finished: boolean;
   }) {
-    console.log(data);
     const { clientId, ...rest } = data;
-    const client = (await this.server.sockets.fetchSockets()).find(
-      (socket) => socket.id === clientId,
-    );
+    const client = (await this.server.sockets.allSockets()).has(clientId);
 
     if (!client) {
       console.error(
@@ -61,6 +57,6 @@ export class RoutesGateway implements OnGatewayInit {
       return;
     }
 
-    client.emit('new-position', rest);
+    this.server.sockets.to(clientId).emit('new-position', rest);
   }
 }
