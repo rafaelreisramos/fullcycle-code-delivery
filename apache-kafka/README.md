@@ -41,3 +41,81 @@ docker compose up
 5. Access the Concluent Control Center
 
 6. Connect > connect-default > Add connector > Upload connector config file (elasticsearch.properties) > Continue > Launch
+
+7. Create custom index based on DevTools
+
+```json
+POST route.new-position/_delete_by_query?conflicts=proceed
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+POST route.new-direction/_delete_by_query?conflicts=proceed
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+PUT route.new-position
+{
+  "mappings": {
+    "properties": {
+      "clientId": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "routeId": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "finished": {
+        "type": "boolean"
+      },
+      "position": {
+        "type": "geo_point"
+      },
+      "timestamp": {
+        "type": "date"
+      }
+    }
+  }
+}
+
+PUT route.new-direction
+{
+  "mappings": {
+    "properties": {
+      "clientId": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "routeId": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "timestamp": {
+        "type": "date"
+      }
+    }
+  }
+}
+```
